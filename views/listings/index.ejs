@@ -1,0 +1,56 @@
+<% layout("/layouts/boilerplate") %>
+
+<section class="listings-page">
+  <div class="listings-heading">
+    <div>
+      <p class="listings-eyebrow">WANDERLUST COLLECTION</p>
+      <h1>Find your next stay</h1>
+      <% if (isSampleListings) { %>
+        <p class="listings-preview-note">Sample stays preview · connect MongoDB to load saved listings</p>
+      <% } %>
+    </div>
+    <span class="listing-count"><%= allListings.length %> stays</span>
+  </div>
+
+  <% if (allListings.length === 0) { %>
+    <p class="listings-empty">No stays are listed yet.</p>
+  <% } else { %>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4 listings-grid">
+      <% for (let listing of allListings) {
+        const listingImage = Array.isArray(listing.image) ? listing.image[0] : listing.image;
+      %>
+        <% if (listing._id) { %>
+          <a href="/listings/<%= listing._id %>" class="listing-link col">
+        <% } else { %>
+          <div class="listing-link col">
+        <% } %>
+          <article class="card listing-card h-100">
+            <% if (listingImage && listingImage.url) { %>
+              <img src="<%= listingImage.url %>" class="card-img-top listing-photo" alt="Photo of <%= listing.title %>" loading="lazy">
+            <% } else { %>
+              <div class="listing-photo listing-photo-placeholder" role="img" aria-label="No photo available">Photo coming soon</div>
+            <% } %>
+            <div class="card-body listing-card-body">
+              <div class="listing-card-heading">
+                <h2 class="listing-title"><%= listing.title %></h2>
+                <% if (listing.location || listing.country) { %>
+                  <p class="listing-location"><%= [listing.location, listing.country].filter(Boolean).join(", ") %></p>
+                <% } %>
+              </div>
+              <% if (listing.description) { %>
+                <p class="listing-description"><%= listing.description %></p>
+              <% } %>
+              <p class="listing-price"><strong>&#8377; <%= Number(listing.price).toLocaleString("en-IN") %></strong> <span>/ night</span></p>
+            </div>
+          </article>
+        <% if (listing._id) { %>
+          </a>
+        <% } else { %>
+          </div>
+        <% } %>
+      <% } %>
+    </div>
+  <% } %>
+</section>
+
+
